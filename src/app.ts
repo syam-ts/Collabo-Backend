@@ -2,8 +2,11 @@ import express, { json } from 'express';
 import { connectDB } from './config/db';
 const app = express();
 import userRouter from './routes/userRouter'
- 
+import cookieParser from 'cookie-parser' 
+
+
 app.use(json())
+app.use(cookieParser());
 app.use('/', userRouter);
 
 

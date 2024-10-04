@@ -1,10 +1,12 @@
 import express from 'express';
-import { User } from '../model/userMdl'
-import validateSingUpData from '../utils/validation'
-import bcrypt from 'bcrypt'
+import { User } from '../model/userMdl';
+import validateSingUpData from '../utils/validation';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { userAuth } from '../middleware/auth'
+
 
 const Router = express.Router();
-
 
 
 Router.post('/signup', async (req, res) => {
@@ -43,36 +45,42 @@ Router.post('/login', async(req, res) => {
 
    const user = await User.findOne({email: email});
    if(!user) {
-    throw new Error('Email not present')
+    throw new Error('Invalid Credentials');
    }
    
    const isValidPassword = await bcrypt.compare(password, user.password);
 
 
    if(isValidPassword) {
-    res.status(200).send('Login Succesful')
-   } else {
-    throw new Error('Password is not correct')
-   }
 
+    const token = await jwt.sign({ _id: user._id}, "Collabo@Backend");
     
-     
-
- 
-
-
-
-
-
-
+    res.cookie("token", token);
+    res.send('Login Succesful');
+   } else {
+    throw new Error('Invalid Credentials');
+   }
   }
   catch(err: any) {
     res.status(400).send("Error : " + err.message);
-  }
+    }
 });
 
 
-Router.get('/feed', async (req, res) => {
+Router.get('/profile',userAuth,  async (req: any, res: any) => {
+
+  try {
+    
+      const user = req.user; 
+      res.send(user);
+    }
+     catch(err: any) {
+      res.status(401).send('Error : ' + err.message);
+    }
+});
+
+
+Router.get('/feed', userAuth, async (req, res) => {
 
  
     const user = await User.find();
@@ -82,7 +90,7 @@ Router.get('/feed', async (req, res) => {
   });
 
 
-  Router.delete('/feed', async (req, res) => {
+  Router.delete('/feed', userAuth, async (req, res) => {
     try{
 
         const userId = req.body.id;
@@ -95,7 +103,7 @@ Router.get('/feed', async (req, res) => {
   })
 
 
-  Router.put('/feed', async (req, res) => {
+  Router.put('/feed',userAuth, async (req, res) => {
     try{
 
         const userId = req.body.id;
