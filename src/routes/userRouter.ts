@@ -11,7 +11,7 @@ Router.post('/signup', async (req, res) => {
 
    try{
     validateSingUpData(req);
-    
+
     const {firstName, lastName, email, password } = req.body;
     const salt: number = 10;
 
@@ -33,6 +33,42 @@ Router.post('/signup', async (req, res) => {
     res.status(400).send('ERROR : ' + err.message)
    }
 
+});
+
+Router.post('/login', async(req, res) => {
+
+  try{
+
+   const { email, password } = req.body;
+
+   const user = await User.findOne({email: email});
+   if(!user) {
+    throw new Error('Email not present')
+   }
+   
+   const isValidPassword = await bcrypt.compare(password, user.password);
+
+
+   if(isValidPassword) {
+    res.status(200).send('Login Succesful')
+   } else {
+    throw new Error('Password is not correct')
+   }
+
+    
+     
+
+ 
+
+
+
+
+
+
+  }
+  catch(err: any) {
+    res.status(400).send("Error : " + err.message);
+  }
 });
 
 
