@@ -1,21 +1,11 @@
-import express from 'express';
+import express, { json } from 'express';
 import { connectDB } from './config/db';
-import { User } from './model/userMdl'
 const app = express();
+import userRouter from './routes/userRouter'
 
-app.post('/signup', async (req, res) => {
+app.use(json())
+app.use('/', userRouter);
 
-    const user = new User ({
-        firstName: 'Syam',
-        lastName: 'nandhu',
-        email: 'Syamnan@gami.com',
-        password: 'syam@123'
-    });
-
-    await user.save();
-    res.send('User Added successfully!')
-
-});
 
 connectDB()
 .then(() => {
