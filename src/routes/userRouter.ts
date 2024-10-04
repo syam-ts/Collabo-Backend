@@ -1,6 +1,6 @@
 import express from 'express';
 import { User } from '../model/userMdl'
-import { Error } from 'mongoose';
+import validateSingUpData from '../utils/validation'
 
 const Router = express.Router();
 
@@ -9,14 +9,16 @@ const Router = express.Router();
 Router.post('/signup', async (req, res) => {
 
    try{
-    console.log('The req : ', req.body)
+    validateSingUpData(req);
+ 
+    
     const user = new User(req.body);
 
     await user.save();
     res.send('User Added successfully!')
    }
    catch(err: any) {
-    res.status(500).send(err.message)
+    res.status(400).send('ERROR : ' + err.message)
    }
 
 });

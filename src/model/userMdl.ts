@@ -47,11 +47,11 @@ const userSchema = new Schema(
     photoUrl: {
       type: String,
       default: userImage,
-      validate(value: string) {
-        if(!validator.isURL(value)) {
-          throw new Error('Invalid photo URL ' + value)
-        }
-        }
+    //   validate(value: string) {
+    //     if(!validator.isURL(value)) {
+    //       throw new Error('Invalid photo URL ' + value)
+    //     }
+    //     }
     },
     about: {
       type: String,

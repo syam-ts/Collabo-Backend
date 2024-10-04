@@ -2,7 +2,7 @@ import express, { json } from 'express';
 import { connectDB } from './config/db';
 const app = express();
 import userRouter from './routes/userRouter'
-
+ 
 app.use(json())
 app.use('/', userRouter);
 
