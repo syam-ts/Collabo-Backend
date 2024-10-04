@@ -1,6 +1,7 @@
 import express from 'express';
 import { User } from '../model/userMdl'
 import validateSingUpData from '../utils/validation'
+import bcrypt from 'bcrypt'
 
 const Router = express.Router();
 
@@ -10,9 +11,20 @@ Router.post('/signup', async (req, res) => {
 
    try{
     validateSingUpData(req);
+    
+    const {firstName, lastName, email, password } = req.body;
+    const salt: number = 10;
+
+    const passwordHash = await bcrypt.hash(password, salt);
+
  
     
-    const user = new User(req.body);
+    const user = new User({
+        firstName, 
+        lastName,
+        email,
+        password: passwordHash
+    });
 
     await user.save();
     res.send('User Added successfully!')
