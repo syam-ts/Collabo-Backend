@@ -4,10 +4,10 @@ import validateSingUpData from '../utils/validation';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { userAuth } from '../middleware/auth';
-const Router = express.Router();
+const router = express.Router();
 
 
-Router.post('/signup', async (req, res) => {
+router.post('/signup', async (req, res) => {
 
    try{
     validateSingUpData(req);
@@ -32,7 +32,7 @@ Router.post('/signup', async (req, res) => {
 });
 
 
-Router.post('/login', async(req, res) => {
+router.post('/login', async(req, res) => {
 
   try{
 
@@ -61,20 +61,9 @@ Router.post('/login', async(req, res) => {
 });
 
 
-Router.get('/profile',userAuth,  async (req: any, res: any) => {
-
-  try {
-    
-      const user = req.user; 
-      res.send(user);
-    }
-     catch(err: any) {
-      res.status(401).send('Error : ' + err.message);
-    }
-});
 
 
-Router.get('/feed', userAuth, async (req, res) => {
+router.get('/feed', userAuth, async (req, res) => {
  
     const user = await User.find();
     console.log("The users : ", user);
@@ -83,7 +72,7 @@ Router.get('/feed', userAuth, async (req, res) => {
   });
 
 
-  Router.delete('/feed', userAuth, async (req, res) => {
+  router.delete('/feed', userAuth, async (req, res) => {
     try{
 
         const userId = req.body.id;
@@ -96,7 +85,7 @@ Router.get('/feed', userAuth, async (req, res) => {
   })
 
 
-  Router.put('/feed',userAuth, async (req, res) => {
+  router.patch('/feed',userAuth, async (req, res) => {
     try{
 
         const userId = req.body.id;
@@ -110,9 +99,7 @@ Router.get('/feed', userAuth, async (req, res) => {
     }
   });
 
-  Router.post('/sendConnctionRequest',userAuth, async (req, res) => {
-    
-    res.send("Connection request Sent!")
-  })
+  
 
-export default Router;
+
+export default router;
