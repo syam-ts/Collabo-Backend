@@ -1,7 +1,7 @@
 import validator from 'validator'
 
 
-const validateSignUpData = (req: any) => {
+export const validateSignUpData = (req: any) => {
 
     const {firstName, lastName, email, password} = req.body;
 
@@ -15,4 +15,15 @@ const validateSignUpData = (req: any) => {
 };
 
 
-export default validateSignUpData;
+
+export const validateProfileData = (req: any) => {
+
+    const allowedEditFields = ["firstName", "lastName","photoUrl", "gender", "age", "about","skills"];
+
+    const isEditAllowed = Object.keys(req.body).every((field: any) =>
+         allowedEditFields.includes(field)
+      )
+    return isEditAllowed;
+};
+
+ 

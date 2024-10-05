@@ -1,6 +1,6 @@
 import express from 'express';
 import { User } from '../model/userMdl';
-import validateSingUpData from '../utils/validation';
+import { validateSignUpData } from '../utils/validation';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { userAuth } from '../middleware/auth';
@@ -10,7 +10,7 @@ const router = express.Router();
 router.post('/signup', async (req, res) => {
 
    try{
-    validateSingUpData(req);
+    validateSignUpData(req);
     const {firstName, lastName, email, password } = req.body;
     const salt: number = 10;
     const passwordHash = await bcrypt.hash(password, salt); 
@@ -64,8 +64,7 @@ router.post('/logout',userAuth , (req, res: any) => {
 
   try{
 
-     res.cookies("token", null);
-     res.send('Logout Successfull');
+     res.cookie("token", null).send('Logout Successfull');
    }
   catch(err: any) {
     res.send('Errot' + err.message);
