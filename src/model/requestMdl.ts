@@ -7,7 +7,7 @@ const requestSchema = new Schema({
     sender: {
         type: Schema.Types.ObjectId,
         requried: true,
-
+        ref: 'User'
     },
     reciever: {
         type: Schema.Types.ObjectId,
@@ -25,7 +25,7 @@ const requestSchema = new Schema({
   { timestamps: true }
 );
 
-requestSchema.index({sender: 1});
+requestSchema.index({sender: 1, reciver: 1});
 
 
  const RequestModel = model("Request", requestSchema);

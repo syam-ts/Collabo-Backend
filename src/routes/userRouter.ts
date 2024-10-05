@@ -4,6 +4,7 @@ import { validateSignUpData } from '../utils/validation';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { userAuth } from '../middleware/auth';
+import ConnectionRequest from '../model/requestMdl';
 const router = express.Router();
 
 
@@ -60,6 +61,7 @@ router.post('/login', async(req, res) => {
     }
 });
 
+
 router.post('/logout',userAuth , (req, res: any) => {
 
   try{
@@ -108,6 +110,34 @@ router.get('/feed', userAuth, async (req, res) => {
     }
   });
 
+
+  router.get('/user/requests/recieved', userAuth, async (req: any, res: any) => {
+
+    try {
+      
+      const loggedInUser = req.user;
+   
+      const connectionRequest = await ConnectionRequest.find({
+        reciever: loggedInUser._id,
+        status: 'intrested'
+      }).populate('sender', ['firstName', 'lastName', 'gender', 'imageUrl', 'age', 'about', 'skills']);
+
+   
+      res.json({ 
+        message: 'Data fetched successfully', 
+        data: connectionRequest
+      });
+
+
+
+
+
+
+
+    } catch (err: any) {
+      res.status(400).json({ message: err.message});
+    }
+  });
   
 
 
