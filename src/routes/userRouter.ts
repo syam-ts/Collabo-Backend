@@ -129,16 +129,43 @@ router.get('/feed', userAuth, async (req, res) => {
       });
 
 
-
-
-
-
-
     } catch (err: any) {
       res.status(400).json({ message: err.message});
     }
   });
   
+
+  router.get('/user/connections', userAuth, async (req: any, res: any) => {
+
+    try{
+
+
+      const loggedInUser = req.user;
+      const connectionRequest = await ConnectionRequest.find({
+        $or: [
+          {sender: loggedInUser._id, status: 'accepted'},
+          {reciever: loggedInUser._id, status: 'accepted'}
+        ]
+      }).populate('sender', [
+        'firstName', 'lastName', 'gender', 'imageUrl', 'age', 'about', 'skills'
+      ]).populate('reciever',[ 'firstName', 'lastName', 'gender', 'imageUrl', 'age', 'about', 'skills']);
+
+      const data = connectionRequest.map((row: any) => 
+      {
+        if(row.sender._id.toString() === loggedInUser._id.toString()) {
+            return row.reciever;
+        }
+            return row.sender
+      }
+      );
+
+      res.json({data});
+
+    }
+    catch(err: any) {
+      res.status(400).json({message: err.message});
+    }
+  })
 
 
 export default router;
