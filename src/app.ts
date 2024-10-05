@@ -5,11 +5,13 @@ import profileRouter from './routes/profileRouter'
 import requrestRouter from './routes/requestRouter'
 import cookieParser from 'cookie-parser' 
 import morgan from 'morgan'
+import cors from 'cors'
 
 
 const app = express();
-const PORT: number = 3000;
+const PORT: number = 7777;
 app.use(morgan('dev'));
+app.use(cors())
 app.use(json())
 app.use(cookieParser());
 
