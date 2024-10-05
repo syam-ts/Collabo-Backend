@@ -74,14 +74,6 @@ router.post('/logout',userAuth , (req, res: any) => {
 });
 
 
-router.get('/feed', userAuth, async (req, res) => {
- 
-    const user = await User.find();
-    console.log("The users : ", user);
-
-    res.send('Router defined');
-  });
-
 
   router.delete('/feed', userAuth, async (req, res) => {
     try{
@@ -165,7 +157,61 @@ router.get('/feed', userAuth, async (req, res) => {
     catch(err: any) {
       res.status(400).json({message: err.message});
     }
-  })
+  });
+
+
+  router.get('/feed', userAuth, async (req: any, res) => {
+ 
+
+    try {
+
+      const loggedInUser = req.user;
+
+      const page: number = parseInt(req.query.page) | 1;
+      let limit: number = parseInt(req.query.limit) | 10;
+      limit = limit > 50 ? 50 : limit;
+      const skip: number = (page - 1) * limit;
+
+      const connectionRequest = await ConnectionRequest.find({
+        $or:[
+         {
+          sender: loggedInUser._id
+         },
+         {
+          reciever: loggedInUser._id
+         }
+        ]
+      }).select(' sender reciever');
+
+
+      const hideUsersFromFeed = new Set();
+
+      connectionRequest.forEach((req: any) => {
+
+        hideUsersFromFeed.add(req.sender.toString())
+        hideUsersFromFeed.add(req.reciever.toString())
+      })
+
+      const users = await User.find({
+        $and: [
+          { _id: { $nin: Array.from(hideUsersFromFeed)}},
+          { _id: { $ne: loggedInUser._id}}
+        ]
+      }).select(' sender reciever').skip(skip).limit(limit);
+
+
+
+
+
+      res.json(connectionRequest);
+
+
+    }
+    catch(err: any) {
+      res.status(400).json({message: err.message});
+    }
+
+  });
 
 
 export default router;
