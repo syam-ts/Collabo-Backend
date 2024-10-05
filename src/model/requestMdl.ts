@@ -25,6 +25,8 @@ const requestSchema = new Schema({
   { timestamps: true }
 );
 
+requestSchema.index({sender: 1});
+
 
  const RequestModel = model("Request", requestSchema);
 
