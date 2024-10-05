@@ -47,7 +47,7 @@ Router.post('/login', async(req, res) => {
 
    if(isValidPassword) {
 
-    const token = await jwt.sign({ _id: user._id}, "Collabo@Backend");
+    const token = await jwt.sign({ _id: user._id}, "Collabo@Backend", { expiresIn: "7d"});
     
     res.cookie("token", token);
     res.send('Login Succesful');

@@ -4,13 +4,18 @@ import { User } from '../model/userMdl';
 export const userAuth = async (req: any, res: any, next: any) => {
 
    try{
+
     const { token } = req.cookies;
+
+
 
     if(!token) {
         throw new Error('Token not valid')
     }
 
-    const decodedObj = await jwt.sign(token ,'Collabo@Backend');
+ 
+    const decodedObj = await jwt.verify(token ,'Collabo@Backend');
+    console.log("The tkn ", decodedObj)
 
     const { _id }: any = decodedObj;
     const user = await User.findById(_id);
@@ -23,6 +28,6 @@ export const userAuth = async (req: any, res: any, next: any) => {
     next();
    }
    catch(err: any) {
-     res.status(404).send('Bad request' + err.message);
+     res.status(404).send( err.message);
    }
 }
