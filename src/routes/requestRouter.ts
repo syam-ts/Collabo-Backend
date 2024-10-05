@@ -9,5 +9,4 @@ router.post('/sendConnctionRequest',userAuth, async (req: any, res: any) => {
     res.send(user.fistName + ' send the connect request');
   });
 
-
   export default router;

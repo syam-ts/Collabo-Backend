@@ -15,7 +15,7 @@ export const userAuth = async (req: any, res: any, next: any) => {
 
  
     const decodedObj = await jwt.verify(token ,'Collabo@Backend');
-    console.log("The tkn ", decodedObj)
+ 
 
     const { _id }: any = decodedObj;
     const user = await User.findById(_id);

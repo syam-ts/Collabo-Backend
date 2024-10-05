@@ -60,7 +60,17 @@ router.post('/login', async(req, res) => {
     }
 });
 
+router.post('/logout',userAuth , (req, res: any) => {
 
+  try{
+
+     res.cookies("token", null);
+     res.send('Logout Successfull');
+   }
+  catch(err: any) {
+    res.send('Errot' + err.message);
+  }
+});
 
 
 router.get('/feed', userAuth, async (req, res) => {
