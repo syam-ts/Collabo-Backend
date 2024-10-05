@@ -17,7 +17,7 @@ const requestSchema = new Schema({
         type: String,
         requried: true,
         enum: {
-            values: [ "ignore", "intrested", "accepted", "rejected"],
+            values: [ "ignored", "intrested", "accepted", "rejected"],
             message: `{VLAUE} is incorrect status type`
         }
     }
@@ -26,4 +26,6 @@ const requestSchema = new Schema({
 );
 
 
-export const RequestModel = model("Request", requestSchema);
+ const RequestModel = model("Request", requestSchema);
+
+ export default RequestModel;

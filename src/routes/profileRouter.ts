@@ -4,7 +4,7 @@ const router = express.Router();
 import { validateProfileData } from '../utils/validation'
 
 
-router.get('/profile',userAuth,  async (req: any, res: any) => {
+router.get('/profile/view',userAuth,  async (req: any, res: any) => {
 
     try {
       
