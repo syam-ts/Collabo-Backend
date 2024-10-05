@@ -1,6 +1,7 @@
 import express from 'express';
 import { userAuth } from '../middleware/auth';
 import ConnectionRequest from '../model/requestMdl'
+import { User } from '../model/userMdl';
 
 const router = express.Router();
 
@@ -16,14 +17,38 @@ router.post('/request/send/:status/:reciever',userAuth, async (req: any, res: an
 
      const allowedStatus = ['ignored', 'intrested'];
 
-     if(!allowedStatus.includes(status)) {
+     const userExists = await User.findById(reciever);
 
-      console.log("The data :  enter here")
+     if(!userExists) {
+
+      return res.status(400).json({message: 'User not found'});
+
+     }
+
+
+     if(!allowedStatus.includes(status)) {
        return res.json({message: 'Invalid status type'});
      }
-     console.log('The stat', req.params.status)
-     const connectionRequest = new ConnectionRequest({
 
+     const existingConnectionRequest = await ConnectionRequest.findOne({
+        $or: [
+          {
+            sender: sender,
+            reciever: reciever
+          },
+           {
+            reciever: sender,
+            sender: reciever
+          }
+        ]
+     });
+
+     if(existingConnectionRequest) {
+       return res.status(400).json({message: 'Connecion request already send'});
+     }
+
+    
+     const connectionRequest = new ConnectionRequest({
       sender, 
       reciever,
       status
