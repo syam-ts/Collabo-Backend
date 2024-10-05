@@ -3,9 +3,7 @@ import { User } from '../model/userMdl';
 import validateSingUpData from '../utils/validation';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { userAuth } from '../middleware/auth'
-
-
+import { userAuth } from '../middleware/auth';
 const Router = express.Router();
 
 
@@ -13,14 +11,10 @@ Router.post('/signup', async (req, res) => {
 
    try{
     validateSingUpData(req);
-
     const {firstName, lastName, email, password } = req.body;
     const salt: number = 10;
+    const passwordHash = await bcrypt.hash(password, salt); 
 
-    const passwordHash = await bcrypt.hash(password, salt);
-
- 
-    
     const user = new User({
         firstName, 
         lastName,
@@ -37,19 +31,19 @@ Router.post('/signup', async (req, res) => {
 
 });
 
+
 Router.post('/login', async(req, res) => {
 
   try{
 
    const { email, password } = req.body;
-
    const user = await User.findOne({email: email});
+
    if(!user) {
     throw new Error('Invalid Credentials');
    }
    
    const isValidPassword = await bcrypt.compare(password, user.password);
-
 
    if(isValidPassword) {
 
@@ -81,7 +75,6 @@ Router.get('/profile',userAuth,  async (req: any, res: any) => {
 
 
 Router.get('/feed', userAuth, async (req, res) => {
-
  
     const user = await User.find();
     console.log("The users : ", user);
@@ -115,6 +108,11 @@ Router.get('/feed', userAuth, async (req, res) => {
     }catch(err: any) {
           res.status(401).send('Could not update user')
     }
+  });
+
+  Router.post('/sendConnctionRequest',userAuth, async (req, res) => {
+    
+    res.send("Connection request Sent!")
   })
 
 export default Router;
