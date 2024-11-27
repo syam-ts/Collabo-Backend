@@ -21,12 +21,10 @@ app.use('/', userRouter);
 app.use('/', profileRouter);
 app.use('/', requrestRouter);
 
-
  
 connectDB()
 .then(() => {
     console.log("Database connection established!");
-
     app.listen(PORT, () => {
         console.log(`Server successfully running on port ${PORT}`);
     });
